@@ -1,6 +1,8 @@
 import { notFound, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import ItemCard from '../components/ItemCard'
 import SearchBar from '../components/SearchBar'
+import Pagination from '../components/Pagination'
 
 // Mock data - in a real application, this would come from an API or database
 const mockData = {
@@ -42,16 +44,20 @@ const mockData = {
   })),
 }
 
-export default function CategoryPage({ params }: { params: { category: string } }) {
+const ITEMS_PER_PAGE = 20
+
+export default function CategoryPage({ params, searchParams }: { params: { category: string }, searchParams: { page?: string } }) {
   const category = params.category.toLowerCase()
-  const searchParams = useSearchParams()
-  const subcategory = searchParams.get('subcategory')
+  const subcategory = searchParams.subcategory
+  const page = parseInt(searchParams.page || '1', 10)
   
   if (!['channel', 'bot', 'group', 'user'].includes(category)) {
     notFound()
   }
 
   const items = mockData[category as keyof typeof mockData]
+  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE)
+  const paginatedItems = items.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
 
   return (
     <div>
@@ -66,10 +72,16 @@ export default function CategoryPage({ params }: { params: { category: string } 
       </div>
       <SearchBar />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-8">
-        {items.map((item: any) => (
+        {paginatedItems.map((item: any) => (
           <ItemCard key={item.id} {...item} />
         ))}
       </div>
+      <Pagination 
+        currentPage={page} 
+        totalPages={totalPages} 
+        baseUrl={`/${category}`}
+        searchParams={searchParams}
+      />
     </div>
   )
 }
