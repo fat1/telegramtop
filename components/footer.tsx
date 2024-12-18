@@ -1,31 +1,56 @@
-import Link from 'next/link'
+'use client'
 
-export function Footer() {
+import { useState } from 'react'
+
+export default function Footer() {
+  const [email, setEmail] = useState('')
+  const [error, setError] = useState('')
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault()
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address')
+    } else {
+      setError('')
+      // Here you would typically send the email to your backend
+      console.log('Subscribed:', email)
+      setEmail('')
+    }
+  }
+
   return (
-    <footer className="border-t bg-background">
-      <div className="container flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0">
-        <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
-          <Link href="/" className="flex items-center space-x-2">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
-              <path d="M21.58 11.4L3.15 2.95a1 1 0 00-1.35 1.13l1.7 6.3a1 1 0 00.75.75l6.3 1.7a1 1 0 010 1.9l-6.3 1.7a1 1 0 00-.75.75L1.8 22.2a1 1 0 001.35 1.13L21.58 15a1 1 0 000-1.8z" />
-            </svg>
-            <span className="font-bold">Telegram Content List</span>
-          </Link>
-          <p className="text-center text-sm leading-loose md:text-left">
-            Built by{" "}
-            <a href="https://twitter.com/yourusername" target="_blank" rel="noreferrer" className="font-medium underline underline-offset-4">
-              Your Name
-            </a>
-            . Open source on{" "}
-            <a href="https://github.com/yourusername/project" target="_blank" rel="noreferrer" className="font-medium underline underline-offset-4">
-              GitHub
-            </a>
-            .
-          </p>
-        </div>
-        <div className="flex items-center space-x-4">
-          <Link href="/privacy" className="text-sm underline underline-offset-4">Privacy</Link>
-          <Link href="/terms" className="text-sm underline underline-offset-4">Terms</Link>
+    <footer className="bg-gray-100 mt-12">
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-wrap justify-between items-center">
+          <div className="w-full md:w-1/2 mb-4 md:mb-0">
+            <h3 className="text-lg font-semibold mb-2">Statistics</h3>
+            <p>Total Channels: 10,000</p>
+            <p>Total Bots: 5,000</p>
+            <p>Total Groups: 8,000</p>
+            <p>Total Users: 20,000</p>
+            <p className="text-sm text-gray-600 mt-2">Last updated: {new Date().toLocaleDateString()}</p>
+          </div>
+          <div className="w-full md:w-1/2">
+            <h3 className="text-lg font-semibold mb-2">Subscribe to Updates</h3>
+            <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                className="flex-grow px-3 py-2 mb-2 sm:mb-0 sm:mr-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                required
+              />
+              <button
+                type="submit"
+                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+              >
+                Subscribe
+              </button>
+            </form>
+            {error && <p className="text-red-500 mt-2">{error}</p>}
+          </div>
         </div>
       </div>
     </footer>
