@@ -1,5 +1,4 @@
-import { notFound, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
+import { notFound } from 'next/navigation'
 import ItemCard from '../components/ItemCard'
 import SearchBar from '../components/SearchBar'
 import Pagination from '../components/Pagination'
@@ -11,7 +10,7 @@ const mockData = {
     type: 'channel',
     name: `Channel ${i + 1}`,
     avatar: `/placeholder.svg?height=50&width=50`,
-    category: 'News',
+    category: ['News', 'Entertainment', 'Education'][Math.floor(Math.random() * 3)],
     description: 'This is a sample channel description.',
     additionalInfo: `${Math.floor(Math.random() * 100000)} subscribers`,
   })),
@@ -20,7 +19,7 @@ const mockData = {
     type: 'bot',
     name: `Bot ${i + 1}`,
     avatar: `/placeholder.svg?height=50&width=50`,
-    category: 'Utility',
+    category: ['Utility', 'Games', 'Productivity'][Math.floor(Math.random() * 3)],
     description: 'This is a sample bot description.',
     additionalInfo: `${Math.floor(Math.random() * 10000)} monthly active users`,
   })),
@@ -29,7 +28,7 @@ const mockData = {
     type: 'group',
     name: `Group ${i + 1}`,
     avatar: `/placeholder.svg?height=50&width=50`,
-    category: 'Discussion',
+    category: ['Discussion', 'Support', 'Networking'][Math.floor(Math.random() * 3)],
     description: 'This is a sample group description.',
     additionalInfo: `${Math.floor(Math.random() * 50000)} members`,
   })),
@@ -38,7 +37,7 @@ const mockData = {
     type: 'user',
     name: `User ${i + 1}`,
     avatar: `/placeholder.svg?height=50&width=50`,
-    category: 'Influencer',
+    category: ['Influencers', 'Experts', 'Creators'][Math.floor(Math.random() * 3)],
     description: 'This is a sample user description.',
     additionalInfo: '',
   })),
@@ -46,7 +45,7 @@ const mockData = {
 
 const ITEMS_PER_PAGE = 20
 
-export default function CategoryPage({ params, searchParams }: { params: { category: string }, searchParams: { page?: string } }) {
+export default function CategoryPage({ params, searchParams }: { params: { category: string }, searchParams: { subcategory?: string, page?: string } }) {
   const category = params.category.toLowerCase()
   const subcategory = searchParams.subcategory
   const page = parseInt(searchParams.page || '1', 10)
@@ -56,8 +55,12 @@ export default function CategoryPage({ params, searchParams }: { params: { categ
   }
 
   const items = mockData[category as keyof typeof mockData]
-  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE)
-  const paginatedItems = items.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
+  const filteredItems = subcategory
+    ? items.filter(item => item.category.toLowerCase() === subcategory.toLowerCase())
+    : items
+
+  const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE)
+  const paginatedItems = filteredItems.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
 
   return (
     <div>
