@@ -22,7 +22,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-100 mt-12">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-wrap justify-between items-center">
+        <div className="flex flex-wrap justify-between items-start">
           <div className="w-full md:w-1/2 mb-4 md:mb-0">
             <h3 className="text-lg font-semibold mb-2">Statistics</h3>
             <p>Total Channels: 10,000</p>
@@ -31,7 +31,7 @@ export default function Footer() {
             <p>Total Users: 20,000</p>
             <p className="text-sm text-gray-600 mt-2">Last updated: {new Date().toLocaleDateString()}</p>
           </div>
-          <div className="w-full md:w-1/2">
+          <div className="w-full md:w-1/2 mb-4 md:mb-0">
             <h3 className="text-lg font-semibold mb-2">Subscribe to Updates</h3>
             <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row">
               <input
@@ -50,6 +50,9 @@ export default function Footer() {
               </button>
             </form>
             {error && <p className="text-red-500 mt-2">{error}</p>}
+            <p className="mt-4">
+              Contact: <a href="mailto:telegram.com@gmail.com" className="text-blue-600 hover:underline">telegram.com@gmail.com</a>
+            </p>
           </div>
         </div>
       </div>

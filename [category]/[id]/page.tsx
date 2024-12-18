@@ -2,6 +2,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
+'use client'
+import { useState } from 'react'
+import { Copy, Check } from 'lucide-react'
 
 // Mock data - in a real application, this would come from an API or database
 const mockData = {
@@ -64,11 +67,35 @@ export default function DetailPage({ params }: { params: { category: string; id:
           </div>
         </div>
         <p className="text-lg mb-4">{item.description}</p>
-        <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-          {item.url}
-        </a>
+        <div className="flex items-center mt-4">
+          <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline mr-2">
+            {item.url}
+          </a>
+          <CopyButton url={item.url} />
+        </div>
       </div>
     </div>
+  )
+}
+
+function CopyButton({ url }: { url: string }) {
+  const [copied, setCopied] = useState(false)
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+
+  return (
+    <button
+      onClick={copyToClipboard}
+      className="text-gray-500 hover:text-blue-600 focus:outline-none"
+      aria-label="Copy URL"
+    >
+      {copied ? <Check size={20} /> : <Copy size={20} />}
+    </button>
   )
 }
 
